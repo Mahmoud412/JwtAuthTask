@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import {Alert, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from 'react-native-elements';
@@ -46,8 +46,18 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView>
-      <Button title="Log Out" onPress={handleLogOut} />
-      <Button title="Send FCM Notifications" onPress={handleSendFcmMessage} />
+      <View style={{padding: 10}}>
+        <Button
+          containerStyle={{padding: 10}}
+          title="Log Out"
+          onPress={handleLogOut}
+        />
+        <Button
+          containerStyle={{padding: 10}}
+          title="Send FCM Notifications"
+          onPress={handleSendFcmMessage}
+        />
+      </View>
     </SafeAreaView>
   );
 };

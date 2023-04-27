@@ -45,7 +45,7 @@ const LoginScreen = () => {
     try {
       setLoading(true);
       await login(credential, password);
-      // navigation.navigate('Home');
+      navigation.navigate('Home');
     } catch (error) {
       console.log('login error: ', error);
       if (error instanceof AuthError) {

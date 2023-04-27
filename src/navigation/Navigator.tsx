@@ -32,6 +32,7 @@ export const SignedOutStack = () => (
         component={SendConfirmationCodeScreen}
       />
       <Stack.Screen name="Registration" component={RegistrationScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );
