@@ -9,9 +9,14 @@ import {
 } from 'react-native-axios-jwt';
 
 const BASE_URL = 'https://usnc.dev-webdevep.ru/auth-back/api/v2';
+const PRIVATE_BASE_URL = 'https://usnc.dev-webdevep.ru/api/private';
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: BASE_URL,
+});
+
+export const privateApi = axios.create({
+  baseURL: PRIVATE_BASE_URL,
 });
 
 api.interceptors.request.use(request => {
@@ -40,5 +45,3 @@ export const setTokens = async (accessToken: string, refreshToken: string) => {
 export const clearTokens = clearAuthTokens;
 
 export const hasTokens = isLoggedIn;
-
-export default api;

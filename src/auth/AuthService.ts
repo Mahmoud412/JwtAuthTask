@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api, {clearTokens, hasTokens, setTokens} from '../api/Api';
+import {api, clearTokens, hasTokens, setTokens} from '../api/Api';
 import AuthError from './AuthError';
 import {STORAGE_KEY} from 'react-native-axios-jwt';
 

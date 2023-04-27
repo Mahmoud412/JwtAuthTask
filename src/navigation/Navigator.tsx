@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SendConfirmationCodeScreen from '../screens/SendConfirmationCodeScreen';
@@ -32,7 +32,6 @@ export const SignedOutStack = () => (
         component={SendConfirmationCodeScreen}
       />
       <Stack.Screen name="Registration" component={RegistrationScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );

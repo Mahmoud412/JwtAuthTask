@@ -1,31 +1,53 @@
-import {View, Text} from 'react-native';
-import React from 'react';
+import {Alert} from 'react-native';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from 'react-native-elements';
 import {logout} from '../auth/AuthService';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/Navigator';
 import {useNavigation} from '@react-navigation/native';
+import {
+  addFcmForegroundHandler,
+  initNotifications,
+  sendFcmNotification,
+} from '../utils/NotifcationsService';
 
 export type HomeScreenNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
   'Home'
 >;
 const HomeScreen = () => {
+  useEffect(() => {
+    initNotifications();
+  }, []);
+
+  useEffect(() => {
+    return addFcmForegroundHandler();
+  }, []);
+
   const navigation = useNavigation<HomeScreenNavigationProps>();
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
     try {
-      logout();
+      await logout();
     } catch (error) {
       console.log(error);
     } finally {
       navigation.navigate('Login');
     }
   };
+  const handleSendFcmMessage = async () => {
+    try {
+      await sendFcmNotification();
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error sending FCM message', JSON.stringify(error));
+    }
+  };
+
   return (
     <SafeAreaView>
-      <Text>HomeScreen</Text>
-      <Button title="log out" onPress={handleLogOut} />
+      <Button title="Log Out" onPress={handleLogOut} />
+      <Button title="Send FCM Notifications" onPress={handleSendFcmMessage} />
     </SafeAreaView>
   );
 };
