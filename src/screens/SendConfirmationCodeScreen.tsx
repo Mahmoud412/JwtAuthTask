@@ -4,16 +4,11 @@ import {Input} from 'react-native-elements';
 import {Button, Icon} from '@rneui/themed';
 import {sendConfirmationCode} from '../auth/AuthService';
 import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/Navigator';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {isEmail, isPhoneNumber} from '../utils/RegexUtils';
-
-export type ConfirmationCodeNavigationProps = NativeStackNavigationProp<
-  RootStackParamList,
-  'ConfirmationCode'
->;
+import {ValidationStyles, formStyle} from './styles/styles';
+import {ConfirmationCodeNavigationProps} from '../navigation/NavigationTypes';
 
 const credentialValidationSchema = yup.object().shape({
   credential: yup
@@ -27,7 +22,6 @@ const credentialValidationSchema = yup.object().shape({
 const SendConfirmationCodeScreen = () => {
   const navigation = useNavigation<ConfirmationCodeNavigationProps>();
   const [loading, setLoading] = useState(false);
-
   const handleSendConfirmationCode = async (credential: string) => {
     setLoading(true);
     const isEmailCredential = isEmail(credential) !== null;
@@ -57,8 +51,8 @@ const SendConfirmationCodeScreen = () => {
       validationSchema={credentialValidationSchema}>
       {({handleChange, handleBlur, handleSubmit, values, errors, isValid}) => (
         <SafeAreaView>
-          <View style={{margin: 10}}>
-            <Text style={{margin: 10, fontWeight: 'bold', fontSize: 17}}>
+          <View style={formStyle.container}>
+            <Text style={formStyle.subContainer}>
               Enter your email or phone number to get a confirmation code
             </Text>
             <Input
@@ -74,7 +68,7 @@ const SendConfirmationCodeScreen = () => {
               }
             />
             {errors.credential && (
-              <Text style={{color: 'red'}}>{errors.credential}</Text>
+              <Text style={ValidationStyles.error}>{errors.credential}</Text>
             )}
           </View>
           <View style={{alignItems: 'center'}}>
@@ -87,8 +81,8 @@ const SendConfirmationCodeScreen = () => {
                 )
               }
               disabled={!isValid}
-              containerStyle={{width: 250, padding: 10}}
-              buttonStyle={{backgroundColor: '#915FDB'}}
+              containerStyle={formStyle.buttonContainerStyle}
+              buttonStyle={formStyle.buttonColor}
               icon={
                 loading ? (
                   <></>

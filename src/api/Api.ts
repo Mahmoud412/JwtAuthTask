@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {
   TokenRefreshRequest,
@@ -9,7 +8,7 @@ import {
 } from 'react-native-axios-jwt';
 
 const BASE_URL = 'https://usnc.dev-webdevep.ru/auth-back/api/v2';
-const PRIVATE_BASE_URL = 'https://usnc.dev-webdevep.ru/api/private';
+const PRIVATE_BASE_URL = 'https://usnc.dev-webdevep.ru/noty/api/private';
 
 export const api = axios.create({
   baseURL: BASE_URL,

@@ -5,15 +5,11 @@ import * as yup from 'yup';
 import {Formik} from 'formik';
 import {isEmail, isPhoneNumber} from '../utils/RegexUtils';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/Navigator';
 import {signUpWithEmail, signUpWithPhone} from '../auth/AuthService';
 import AuthError from '../auth/AuthError';
-
-export type RegistrationScreenNavigationProps = NativeStackNavigationProp<
-  RootStackParamList,
-  'Registration'
->;
+import {formStyle, ValidationStyles} from './styles/styles';
+import {RegistrationScreenNavigationProps} from '../navigation/NavigationTypes';
 
 type RegistrationScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -67,13 +63,13 @@ const RegistrationScreen = () => {
   };
   return (
     <Formik
-      initialValues={{credential: '', password: '', code: ''}}
+      initialValues={{credential: credential, password: '', code: ''}}
       onSubmit={values => {
         handleSignUp(values.credential, values.code, values.password);
       }}
       validationSchema={credentialValidationSchema}>
       {({handleChange, handleBlur, handleSubmit, values, errors, isValid}) => (
-        <View style={{margin: 10}}>
+        <View style={formStyle.container}>
           <View>
             <Input
               disabled={loading}
@@ -87,7 +83,7 @@ const RegistrationScreen = () => {
               }
             />
             {errors.credential && (
-              <Text style={{color: 'red'}}>{errors.credential}</Text>
+              <Text style={ValidationStyles.error}>{errors.credential}</Text>
             )}
             <Input
               disabled={loading}
@@ -104,7 +100,9 @@ const RegistrationScreen = () => {
                 />
               }
             />
-            {errors.code && <Text style={{color: 'red'}}>{errors.code}</Text>}
+            {errors.code && (
+              <Text style={ValidationStyles.error}>{errors.code}</Text>
+            )}
             <Input
               disabled={loading}
               placeholder="Password"
@@ -115,7 +113,7 @@ const RegistrationScreen = () => {
               secureTextEntry
             />
             {errors.password && (
-              <Text style={{color: 'red'}}>{errors.password}</Text>
+              <Text style={ValidationStyles.error}>{errors.password}</Text>
             )}
           </View>
           <View style={{alignItems: 'center'}}>
@@ -128,8 +126,8 @@ const RegistrationScreen = () => {
                 )
               }
               disabled={!isValid || loading}
-              containerStyle={{width: 250, marginVertical: 20}}
-              buttonStyle={{backgroundColor: '#915FDB'}}
+              containerStyle={formStyle.buttonContainerStyle}
+              buttonStyle={formStyle.buttonColor}
               onPress={handleSubmit}
             />
           </View>

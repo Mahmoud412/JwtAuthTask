@@ -1,14 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {isUserAuthenticated} from '../auth/AuthService';
+import React, {useEffect} from 'react';
 import {SignedInStack, SignedOutStack} from './Navigator';
+import {useAppDispatch, useAppSelector} from '../redux/store';
+import {init} from '../redux/features/AuthSlice';
+import {hasTokens} from '../api/Api';
 
 const ProtectedRoute = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
+  const disptach = useAppDispatch();
   useEffect(() => {
-    (async () => setIsLoggedIn(await isUserAuthenticated()))();
-  }, [isLoggedIn]);
-  
+    (async () => disptach(init(await hasTokens())))();
+  }, []);
+
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn);
   return <>{isLoggedIn ? <SignedInStack /> : <SignedOutStack />}</>;
 };
 

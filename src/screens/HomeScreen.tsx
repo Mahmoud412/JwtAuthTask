@@ -1,40 +1,30 @@
 import {Alert, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from 'react-native-elements';
-import {logout} from '../auth/AuthService';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/Navigator';
-import {useNavigation} from '@react-navigation/native';
 import {
   addFcmForegroundHandler,
   initNotifications,
   sendFcmNotification,
 } from '../utils/NotifcationsService';
+import useLogin from '../hooks/useLogin';
+import {formStyle} from './styles/styles';
 
-export type HomeScreenNavigationProps = NativeStackNavigationProp<
-  RootStackParamList,
-  'Home'
->;
 const HomeScreen = () => {
+  const {dispatchLogout} = useLogin();
   useEffect(() => {
     initNotifications();
-  }, []);
-
-  useEffect(() => {
     return addFcmForegroundHandler();
   }, []);
 
-  const navigation = useNavigation<HomeScreenNavigationProps>();
   const handleLogOut = async () => {
     try {
-      await logout();
+      await dispatchLogout();
     } catch (error) {
       console.log(error);
-    } finally {
-      navigation.navigate('Login');
     }
   };
+
   const handleSendFcmMessage = async () => {
     try {
       await sendFcmNotification();
@@ -51,11 +41,13 @@ const HomeScreen = () => {
           containerStyle={{padding: 10}}
           title="Log Out"
           onPress={handleLogOut}
+          buttonStyle={formStyle.buttonColor}
         />
         <Button
           containerStyle={{padding: 10}}
           title="Send FCM Notifications"
           onPress={handleSendFcmMessage}
+          buttonStyle={formStyle.buttonColor}
         />
       </View>
     </SafeAreaView>

@@ -6,22 +6,16 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Button, Icon, Input} from 'react-native-elements';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {isEmail, isPhoneNumber} from '../utils/RegexUtils';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/Navigator';
-import {login} from '../auth/AuthService';
+import {useNavigation} from '@react-navigation/native';
 import AuthError from '../auth/AuthError';
-import {useIsFocused} from '@react-navigation/native';
-
-export type LoginScreenNavigationProps = NativeStackNavigationProp<
-  RootStackParamList,
-  'Login'
->;
+import useLogin from '../hooks/useLogin';
+import {ValidationStyles, formStyle} from './styles/styles';
+import {LoginScreenNavigationProps} from '../navigation/NavigationTypes';
 
 const credentialValidationSchema = yup.object().shape({
   credential: yup
@@ -37,6 +31,7 @@ const credentialValidationSchema = yup.object().shape({
 });
 
 const LoginScreen = () => {
+  const {dispatchLogin} = useLogin();
   const navigation = useNavigation<LoginScreenNavigationProps>();
   const [loading, setLoading] = useState<boolean>(false);
   const handleSignIn = async (credential: string, password: string) => {
@@ -44,8 +39,7 @@ const LoginScreen = () => {
     console.log(isEmailCredential);
     try {
       setLoading(true);
-      await login(credential, password);
-      navigation.navigate('Home');
+      await dispatchLogin(credential, password);
     } catch (error) {
       console.log('login error: ', error);
       if (error instanceof AuthError) {
@@ -66,7 +60,7 @@ const LoginScreen = () => {
       }}
       validationSchema={credentialValidationSchema}>
       {({handleChange, handleBlur, handleSubmit, values, errors, isValid}) => (
-        <SafeAreaView style={{margin: 10}}>
+        <SafeAreaView style={formStyle.container}>
           <View>
             <Input
               disabled={loading}
@@ -80,7 +74,7 @@ const LoginScreen = () => {
               }
             />
             {errors.credential && (
-              <Text style={{color: 'red'}}>{errors.credential}</Text>
+              <Text style={ValidationStyles.error}>{errors.credential}</Text>
             )}
 
             <Input
@@ -93,7 +87,7 @@ const LoginScreen = () => {
               secureTextEntry
             />
             {errors.password && (
-              <Text style={{color: 'red'}}>{errors.password}</Text>
+              <Text style={ValidationStyles.error}>{errors.password}</Text>
             )}
           </View>
           <View style={{alignItems: 'center'}}>
@@ -107,12 +101,12 @@ const LoginScreen = () => {
               }
               disabled={!isValid || loading}
               containerStyle={{width: 250, marginVertical: 20}}
-              buttonStyle={{backgroundColor: '#915FDB'}}
+              buttonStyle={formStyle.buttonColor}
               onPress={handleSubmit}
             />
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Text>create new account</Text>
+            <Text>Create new account</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate('ConfirmationCode')}>
               <Text style={{color: 'blue'}}> Sign Up?</Text>
