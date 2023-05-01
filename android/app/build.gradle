@@ -99,7 +99,7 @@ android {
 
     namespace "com.jwtauthtask"
     defaultConfig {
-        applicationId "com.jwtauthtask"
+        applicationId "com.stebla"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

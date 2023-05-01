@@ -1,5 +1,5 @@
-import {Alert, View} from 'react-native';
-import React, {FC, useEffect} from 'react';
+import {Alert, TextInput, View} from 'react-native';
+import React, {FC, useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from 'react-native-elements';
 import {
@@ -9,8 +9,16 @@ import {
 } from '../utils/NotifcationsService';
 import useLogin from '../hooks/useLogin';
 import {formStyle} from './styles/styles';
+import {getCurrentUid} from '../auth/AuthService';
 
 const HomeScreen = () => {
+  const [currentUid, setCurrentUid] = useState<string>();
+  useEffect(() => {
+    (async () => {
+      setCurrentUid((await getCurrentUid()) || '');
+    })();
+  }, []);
+
   const {dispatchLogout} = useLogin();
   useEffect(() => {
     initNotifications();
@@ -45,9 +53,13 @@ const HomeScreen = () => {
         />
         <Button
           containerStyle={{padding: 10}}
-          title="Send FCM Notifications"
+          title="Send FCM Notification"
           onPress={handleSendFcmMessage}
           buttonStyle={formStyle.buttonColor}
+        />
+        <TextInput
+          style={{padding: 10, borderRadius: 10}}
+          value={'UID: ' + currentUid}
         />
       </View>
     </SafeAreaView>

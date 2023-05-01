@@ -1,5 +1,8 @@
+import jwtDecode, {JwtPayload} from 'jwt-decode';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {api, clearTokens, hasTokens, setTokens} from '../api/Api';
 import AuthError from './AuthError';
+import {getAccessToken} from 'react-native-axios-jwt';
 
 export const isUserAuthenticated = hasTokens;
 export const sendConfirmationCode = async (
@@ -29,6 +32,7 @@ export const login = async (
     throw new AuthError(data.msg, data.code);
   }
 
+  console.log('access token: ' + data.accessToken);
   await setTokens(data.accessToken, data.refreshToken);
 };
 
@@ -65,7 +69,18 @@ const signUp = async (requestBody: any): Promise<string> => {
   if (!response.data.ok) {
     throw new AuthError(response.data.msg, response.data.code);
   }
-  return response.data.uid;
+  const uid = response.data.uid;
+  console.log('uid: ' + uid);
+  await AsyncStorage.setItem('current_uid', uid);
+  return uid;
+};
+
+export const getCurrentUid = async (): Promise<string | undefined> => {
+  const accessToken = await getAccessToken();
+  if (accessToken) {
+    const payload = jwtDecode<JwtPayload>(accessToken);
+    return payload.sub;
+  }
 };
 
 // const validateJwtAccessToken = async (token: string) => {
