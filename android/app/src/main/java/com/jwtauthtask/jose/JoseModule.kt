@@ -1,4 +1,4 @@
-package com.jwtauthtask
+package com.jwtauthtask.jose
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -6,9 +6,14 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.nimbusds.jose.JOSEException
+import com.nimbusds.jose.crypto.RSASSAVerifier
+import com.nimbusds.jose.crypto.bc.BouncyCastleProviderSingleton
+import com.nimbusds.jose.jwk.RSAKey
+import com.nimbusds.jwt.SignedJWT
 import org.json.JSONObject
 
-class JoseModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext){
+class JoseModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     override fun getName(): String = "JoseModule"
 
     @ReactMethod
@@ -17,13 +22,19 @@ class JoseModule(private val reactContext: ReactApplicationContext) : ReactConte
             val signedJWT = SignedJWT.parse(token)
             val jwkString = JSONObject(jwk.toHashMap()).toString()
             val rsaJWK = RSAKey.parse(jwkString)
-            val verifier = RSASSAVerifier(rsaJWK)
-            verifier.jcaContext.provider = BouncyCastleProviderSingleton.getInstance()
-            signedJWT.verify(verifier)
-            val result = convertJsonToMap(JSONObject(signedJWT.payload.toJSONObject()))
-            promise.resolve(result)
-        } catch (ex: Exception) {
-            promise.reject(ex)
+            val verifier = RSASSAVerifier(rsaJWK).apply {
+                jcaContext.provider = BouncyCastleProviderSingleton.getInstance()
+            }
+            val isValid = signedJWT.verify(verifier)
+            if (isValid) {
+                promise.resolve(
+                    convertJsonToMap(JSONObject(signedJWT.payload.toJSONObject()))
+                )
+                return
+            }
+            promise.reject(JOSEException("Invalid JWT signature"))
+        } catch (e: Exception) {
+            promise.reject(e)
         }
     }
 }

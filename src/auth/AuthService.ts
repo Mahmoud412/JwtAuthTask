@@ -1,8 +1,10 @@
 import jwtDecode, {JwtPayload} from 'jwt-decode';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {api, clearTokens, hasTokens, setTokens} from '../api/Api';
 import AuthError from './AuthError';
 import {getAccessToken} from 'react-native-axios-jwt';
+import {NativeModules} from 'react-native';
+
+const {JoseModule} = NativeModules;
 
 export const isUserAuthenticated = hasTokens;
 export const sendConfirmationCode = async (
@@ -33,6 +35,7 @@ export const login = async (
   }
 
   console.log('access token: ' + data.accessToken);
+  await validateJwtAccessToken(data.accessToken);
   await setTokens(data.accessToken, data.refreshToken);
 };
 
@@ -71,7 +74,6 @@ const signUp = async (requestBody: any): Promise<string> => {
   }
   const uid = response.data.uid;
   console.log('uid: ' + uid);
-  await AsyncStorage.setItem('current_uid', uid);
   return uid;
 };
 
@@ -83,19 +85,10 @@ export const getCurrentUid = async (): Promise<string | undefined> => {
   }
 };
 
-// const validateJwtAccessToken = async (token: string) => {
-//   const alg = 'RS256';
-//   const jwk = await getJwk();
-//   if (jwk === null) {
-//     throw new AuthError('Could not download public key');
-//   }
-//   try {
-//     const publicKey = await jose.importJWK(jwk, alg);
-//     const {payload, protectedHeader} = await jose.jwtVerify(token, publicKey);
-//     console.log('Decoded token payload:' + payload);
-//     console.log('Decoded token protectedHeader:' + protectedHeader);
-//   } catch (error) {
-//     console.log(error);
-//     throw new AuthError('Invalid access token');
-//   }
-// };
+const validateJwtAccessToken = async (token: string) => {
+  const publicKeyResponse = await api.post('/getPublicKey', {});
+  const publicKey = publicKeyResponse.data;
+  console.log('public key', publicKey);
+  const payload = await JoseModule.verify(token, publicKey);
+  console.log('JWT payload: ' + JSON.stringify(payload));
+};

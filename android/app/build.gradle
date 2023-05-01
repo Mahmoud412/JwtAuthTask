@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'kotlin-android'
 apply plugin: "com.facebook.react"
 apply plugin: 'com.google.gms.google-services'
 
@@ -156,7 +157,10 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+    implementation 'com.nimbusds:nimbus-jose-jwt:8.0'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.67'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {

@@ -19,20 +19,20 @@ export const notificationsApi = axios.create({
   baseURL: NOTIFICATIONS_BASE_URL,
 });
 
-api.interceptors.request.use(request => {
-  console.log('Request', JSON.stringify(request, null, 2));
-  return request;
-});
+// api.interceptors.request.use(request => {
+//   console.log('Request', JSON.stringify(request, null, 2));
+//   return request;
+// });
 
-notificationsApi.interceptors.request.use(request => {
-  console.log('Request', JSON.stringify(request, null, 2));
-  return request;
-});
+// notificationsApi.interceptors.request.use(request => {
+//   console.log('Request', JSON.stringify(request, null, 2));
+//   return request;
+// });
 
-notificationsApi.interceptors.response.use(response => {
-  console.log('Response', JSON.stringify(response, null, 2));
-  return response;
-});
+// notificationsApi.interceptors.response.use(response => {
+//   console.log('Response', JSON.stringify(response, null, 2));
+//   return response;
+// });
 
 const requestRefresh: TokenRefreshRequest = async (
   refreshToken: string,
